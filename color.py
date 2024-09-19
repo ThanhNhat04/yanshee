@@ -174,3 +174,19 @@ while True:
         if camera_detect_color(color):
             print(color)
             break  
+
+
+if (camera_detect_color("red")):
+    print("red")
+elif (camera_detect_color("green")):     
+    print("green")
+elif (camera_detect_color("cyan")):
+    print("cyan")
+
+
+def check_color():
+    colors = ["red", "green", "cyan"]
+    for color in colors:
+        if camera_detect_color(color):
+            print(color)
+            break 

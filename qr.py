@@ -132,3 +132,46 @@ def camera_detect_qr_code(t):
     except:
         flag = False
     return flag
+
+
+# final qr
+
+
+import YanAPI
+import sys
+import os
+
+YanAPI.yan_api_init("10.0.9.10")
+
+def __validation_response(res=None):
+    if res:
+        if res['code'] == 7 or res['code'] == 20001:
+            sys.stdout.write("\r")
+            sys.stdout.write("message:CAMERA_BUSY")
+            sys.stdout.flush()
+            os._exit(0)
+
+def camera_detect_qr_code(qr):
+    detect_qr = qr.lower()
+    flag = False
+    try:
+        res = YanAPI.sync_do_QR_code_recognition(4)
+        print(res)
+        __validation_response(res)
+        for item in res['data']['contents']:
+            if item == detect_qr:
+                flag = True
+                break
+    except :
+        flag = False
+    return flag
+
+def check_qr_code():
+    key_qr = ["l", "m", "r"]
+    for qr in key_qr:
+        print("ok2")
+        if camera_detect_qr_code(qr):
+            print("ok")
+            break
+
+check_qr_code()
