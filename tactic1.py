@@ -83,8 +83,14 @@ def start_play_motion(name: str = "reset", direction: str = "", speed: str = "no
     except:
         print('bad program')
 
-# List Funcion
+def put_gait_motions(speed_v: int = 0, steps: int = 0):
+    try:
+        YanAPI.sync_do_motion_gait(speed_v=speed_v, steps=steps, period=6-abs(speed_v))
+    except:
+        #result = False
+        print('bad program')
 
+# List Funcion
 def delay(delay): # Hàm delay
     time.sleep(delay)
 
@@ -101,7 +107,6 @@ def check_qr_code(): # Check qr
         if camera_detect_qr_code(qr):
             print(qr)
             break
-
 # Xoay người
 #put_motions("turn around", "right", "normal", 1)
 
@@ -132,26 +137,21 @@ def movement_L():
 # -----------------Logic chương trình---------------------#
 
 YanAPI.yan_api_init("192.168.1.105") #Nhớ đổi ip
+print("Yanshee running")
 
-print("run")
-
-# Xuất phát từ đích
 put_motions("walk", "forward", "normal", 2)
 
 # Cầu thang (lưu ý thay đổi tên action)
-    # Lên thang
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-    # Xuống thang 
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-start_play_motion("lenthg", "", "normal", 1, version="v1")
+start_play_motion("T1", "", "normal", 1, version="v1")
+start_play_motion("T2", "", "normal", 1, version="v1")
+start_play_motion("T3", "", "normal", 1, version="v1")
+start_play_motion("T4", "", "normal", 1, version="v1")
+
+
+put_motions("walk", "forward", "normal", 2)
 
 # Tiến tới chướng ngoại vật thứ 2 và qua thanh chắn
-put_motions("walk", "forward", "normal", 2)
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-
-
-
+start_play_motion("rc", "", "normal", 1, version="v1")
 
 
 # ----------------Tiến vào khu vực 2----------------
@@ -165,23 +165,12 @@ start_play_motion("gapDemo", "", "normal", 1, version="v1")
 put_motions("walk", "backward", "fast", 2)
 start_play_motion("tha", "", "normal", 1, version="v1")
 
-
 # Gắp bóng 2
 check_color()
 check_qr_code()
 
 start_play_motion("lenthg", "", "normal", 1, version="v1")
 start_play_motion("lenthg", "", "normal", 1, version="v1")
-
-# # Gắp bóng 3
-# check_color()
-# check_qr_code()
-# start_play_motion("lenthg", "", "normal", 1, version="v1")
-# start_play_motion("lenthg", "", "normal", 1, version="v1")
-
-
-
-
 
 
 
