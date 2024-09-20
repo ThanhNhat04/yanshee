@@ -10,10 +10,6 @@ isCanGaitControl = False
 is_need_reset_gait_control = False
 is_on_stop = False
 
-# Mảng lưu trữ giá trị trả về data di chuyển
-arrLocal = ['r','l','m']
-Locals = ['right', 'left', 'mid']
-
 # Funcion xử lý chương trình
 # Reset robot
 def reset_robot():
@@ -28,10 +24,6 @@ def reset_robot():
     else:
         YanAPI.start_play_motion(name = "Reset", repeat = 1)
     YanAPI.set_robot_led("button", "white", "reset")
-
-# Hàm delay
-def delay(delay):
-    time.sleep(delay)
 
 # Hàm kiểm tra camera
 def __validation_response(res=None):
@@ -93,6 +85,9 @@ def start_play_motion(name: str = "reset", direction: str = "", speed: str = "no
 
 # List Funcion
 
+def delay(delay): # Hàm delay
+    time.sleep(delay)
+
 def check_color(): # Check color
     colors = ["red", "green", "cyan"]
     for color in colors:
@@ -108,9 +103,28 @@ def check_qr_code(): # Check qr
             break
 
 # Xoay người
+#put_motions("turn around", "right", "normal", 1)
+
 # Di chuyển chữ U
+def movement_u():
+    put_motions("walk", "forward", "fast", 2)
+    put_motions("turn around", "left", "normal", 1)
+    put_motions("walk", "forward", "fast", 2)
+    put_motions("turn around", "left", "normal", 1)
+    put_motions("walk", "forward", "fast", 2)
+
+
 # Di chuyển chữ L
-# Di chuyển ngang
+def movement_L():
+    put_motions("walk", "forward", "fast", 2)
+    put_motions("turn around", "left", "normal", 1)
+    put_motions("walk", "forward", "fast", 2)
+
+
+# Di chuyển sang ngang
+    # put_motions("walk", "left", "fast", 2)
+    # put_motions("walk", "right", "fast", 2)
+
 
 
 
@@ -136,21 +150,40 @@ start_play_motion("lenthg", "", "normal", 1, version="v1")
 put_motions("walk", "forward", "normal", 2)
 start_play_motion("lenthg", "", "normal", 1, version="v1")
 
-# Tiến vào khu vực 2
+
+
+
+
+# ----------------Tiến vào khu vực 2----------------
+
 # Nhiệm vụ gắp thả bóng 1
 check_color()
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-start_play_motion("lenthg", "", "normal", 1, version="v1")
+check_qr_code()
+
+put_motions("walk", "forward", "fast", 2)
+start_play_motion("gapDemo", "", "normal", 1, version="v1")
+put_motions("walk", "backward", "fast", 2)
+start_play_motion("tha", "", "normal", 1, version="v1")
+
 
 # Gắp bóng 2
 check_color()
+check_qr_code()
+
 start_play_motion("lenthg", "", "normal", 1, version="v1")
 start_play_motion("lenthg", "", "normal", 1, version="v1")
 
-# Gắp bóng 3
-check_color()
-start_play_motion("lenthg", "", "normal", 1, version="v1")
-start_play_motion("lenthg", "", "normal", 1, version="v1")
+# # Gắp bóng 3
+# check_color()
+# check_qr_code()
+# start_play_motion("lenthg", "", "normal", 1, version="v1")
+# start_play_motion("lenthg", "", "normal", 1, version="v1")
+
+
+
+
+
+
 
 #------ Khởi động lại yanshee--------
 reset_robot()
