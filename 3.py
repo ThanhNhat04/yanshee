@@ -4,6 +4,8 @@ import YanAPI
 import sys
 import os
 import time 
+import cv2
+import numpy as np
 
 isCanGaitControl = False
 is_need_reset_gait_control = False
@@ -163,6 +165,72 @@ def check_gyro_status():
     else:
         print("Trạng thái không xác định")
 
+# Check color 2
+# Tạo các danh sách để lưu màu đã nhận diện
+color_red = []
+color_blue = []
+color_green = []
+
+# Hàm thêm màu vào danh sách và in thông báo
+def add_to_list(color_list, color_name):
+    if color_name not in color_list:
+        color_list.append(color_name)
+        print("Lấy được vật phẩm màu {}".format(color_name))
+
+# Hàm nhận diện màu đỏ
+def detect_red(hsv):
+    lower_red = np.array([170, 126, 50])
+    upper_red = np.array([180, 255, 255])
+    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+    if np.any(mask_red):
+        add_to_list(color_red, "đỏ")
+        return True
+    return False
+
+# Hàm nhận diện màu xanh lá cây
+def detect_green(hsv):
+    lower_green = np.array([40, 180, 55])
+    upper_green = np.array([85, 255, 255])
+    mask_green = cv2.inRange(hsv, lower_green, upper_green)
+    if np.any(mask_green):
+        add_to_list(color_green, "xanh")
+        return True
+    return False
+
+# Hàm nhận diện màu xanh biển
+def detect_blue(hsv):
+    lower_blue = np.array([90, 150, 87])
+    upper_blue = np.array([140, 255, 255])
+    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+    if np.any(mask_blue):
+        add_to_list(color_blue, "lam")
+        return True
+    return False
+
+
+def detect_color_in_frame():
+    cap = cv2.VideoCapture(0)  # Ensure the camera is initialized
+    try:
+        while True:
+            # Read a frame from the camera
+            ret, frame = cap.read()
+            if not ret:
+                print("Failed to grab frame")
+                break
+            x, y, w, h = 100, 350, 500, 300
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 250), 2)
+            cropped_frame = frame[y:y + h, x:x + w]
+            hsv = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2HSV)
+            if detect_red(hsv):
+                break
+            if detect_green(hsv):
+                break
+            if detect_blue(hsv):
+                break
+
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
 
 # Xoay người
 #put_motions("turn around", "right", "normal", 1)
@@ -192,18 +260,23 @@ def movement_L():
 
 # -----------------Logic chương trình---------------------#
 
-YanAPI.yan_api_init("10.0.9.10") #Nhớ đổi ip
+YanAPI.yan_api_init("10.0.7.248") #Nhớ đổi ip
 print("Yanshee ready running")
 
 # put_motions("walk", "forward", "normal", 2)
 
-# # Cầu thang (lưu ý thay đổi tên action)
-# start_play_motion("T1", "", "normal", 1, version="v1")
-# start_play_motion("T2", "", "normal", 1, version="v1")
-# check_gyro_status()
-# start_play_motion("T3", "", "normal", 1, version="v1")
-# start_play_motion("T4", "", "normal", 1, version="v1")
-
+# Cầu thang (lưu ý thay đổi tên action)
+start_play_motion("T1", "", "normal", 1, version="v1")
+start_play_motion("T2", "", "normal", 1, version="v1")
+start_play_motion("T3", "", "normal", 1, version="v1")
+check_gyro_status()
+start_play_motion("T4", "", "normal", 1, version="v1")
+check_gyro_status()
+put_gait_motions(2,5)
+put_motions("turn around", "right", "slow", 1)
+put_motions("walk", "forward", "slow", 3)
+put_motions("walk", "right", "fast", 4)
+start_play_motion("thurao", "", "normal", 1, version="v1")
 
 # put_motions("walk", "forward", "normal", 2)
 
@@ -216,15 +289,39 @@ print("Yanshee ready running")
 
 
 # Nhiệm vụ gắp thả bóng 1
-
-put_motions("walk", "forward", "very slow", 5)
-put_motions("turn around", "left", "very slow", 2)
-put_motions("walk", "forward", "very slow", 3)
-start_play_motion("gapB", "", "normal", 1, version="v1")
-put_motions("walk", "backward", "very slow", 6)
-
+# put_motions("walk", "forward", "very slow", 5)
+# put_motions("turn around", "left", "very slow", 2)
+# put_motions("walk", "forward", "very slow", 3)
+# start_play_motion("gapB", "", "normal", 1, version="v1")
+# put_motions("walk", "backward", "very slow", 6)
 
 # Nhiệm vụ gắp thả bóng 2
+
+
+
+
+# start_play_motion("thurao", "", "normal", 1, version="v1")
+
+# put_motions("turn around", "right", "slow", 1)
+
+# put_motions("walk", "forward", "slow", 6)
+
+# put_motions("turn around", "left", "slow", 1)
+
+# # put_motions("walk", "forward", "very slow", 1)
+
+# start_play_motion("gap", "", "normal", 1, version="v1")
+
+# put_motions("walk", "backward", "very slow", 7)
+
+# put_motions("turn around", "right", "very slow", 3)
+
+# put_motions("walk", "forward", "very slow", 2)
+
+# start_play_motion("tha", "", "normal", 1, version="v1")
+
+
+
 
 
 
@@ -233,3 +330,7 @@ put_motions("walk", "backward", "very slow", 6)
 
 # #------ Khởi động lại yanshee--------
 reset_robot()
+
+
+
+detect_color_in_frame()
